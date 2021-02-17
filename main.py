@@ -22,11 +22,12 @@ class Space:    # пространство
         # Рисуем клетчатое поле:
         for y in range(self.height):
             for x in range(self.width):
-                pg.draw.rect(screen,
-                             pg.Color('black'),
-                             (x * self.cell_size + self.left,
-                              y * self.cell_size + self.top,
-                              self.cell_size, self.cell_size), 1)
+                if self.board[y][x] == 1:
+                    pg.draw.rect(screen,
+                                 pg.Color('black'),
+                                 (x * self.cell_size + self.left,
+                                 y * self.cell_size + self.top,
+                                 self.cell_size, self.cell_size), 0)
 
     def random_level(self, diff, maxi):
         pass
