@@ -18,33 +18,36 @@ def load_image(name, colorkey=None):
 class Roota(pg.sprite.Sprite):
     image = load_image('hero.png')
 
-    def __init__(self, x, y, *group):
-        super().__init__(*group)
+    def __init__(self, x, y):
+        super().__init__(group_sprites)
         self.speedx = 0
-        self.speedy = -1
+        self.speedy = -2
         self.G = 0.02
-        self.rect = pg.Rect(x, y, 10, 10)
+        self.rect = pg.Rect(x, y, 28, 50)
         self.image = Roota.image
-        print(x, y, *group)
+        print(x, y)
         self.add(roota_sprites)
+        self.dt = 0
 
     def speed_up(self):
-        self.speedy = -1
+        self.speedy = -2
+        self.dt = time.get_ticks() // 1000
 
-    def update(self, dt, size):
+    def update(self):
+        dt = time.get_ticks() // 1000 - self.dt
         if self.rect.x < 0:
             self.rect.x += size[0]
         self.rect.x = (self.rect.x + self.speedx) % size[0]
-        if self.rect.y - self.rect.height - 1 == size[1]:
-            self.speed_up()
         self.rect.y += self.speedy
         self.speedy = self.speedy + self.G * dt
+        if pg.sprite.spritecollideany(self, horizontal_borders):
+            self.speed_up()
         print(self.rect.x, self.rect.y)
 
 
 class Stick(pg.sprite.Sprite):
-    def __init__(self, x, y, *group):
-        super().__init__(*group)
+    def __init__(self, x, y):
+        super().__init__(group_sprites)
         self.speedy = 1
         self.G = 0.02
         self.rect = pg.Rect(x, y, 30, 5)
@@ -75,15 +78,15 @@ if __name__ == '__main__':
     group_sprites = pg.sprite.Group()
     roota_sprites = pg.sprite.Group()
     sticks = pg.sprite.Group()
-    border = pg.sprite.Group()
     horizontal_borders = pg.sprite.Group()
     hero = Roota(100, 600)
+    Border(5, height - 5, width - 5, height - 5)
     running = True
     clock = time.Clock()
     while running:
         screen.fill(pg.Color('black'))
-        roota_sprites.draw(screen)
-        roota_sprites.update(time.get_ticks() // 1000, size)
+        group_sprites.draw(screen)
+        group_sprites.update()
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
