@@ -1,4 +1,9 @@
 import pygame as pg
+from pygame import time
+
+
+M = 2
+G = 10
 
 
 class Space:    # пространство
@@ -8,26 +13,33 @@ class Space:    # пространство
         self.width = 800
         # Высота поля:
         self.height = 800
+        # Размер ячейки:
+        self.cell_size = 25
         # Изначально заполняем игровое поле нулями:
-        self.board = [[0] * width for _ in range(height)]
+        self.board = [[0] * (width // self.cell_size) for _ in range(height // self.cell_size)]
         # Отступ сверху:
         self.top = 0
         # Отступ слева:
         self.left = 200
-        # Размер ячейки:
-        self.cell_size = 50
 
     def render(self):
         """Рендеринг"""
         # Рисуем клетчатое поле:
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.board[y][x] == 1:
+        self.board[3][6] = 1
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if self.board[i][j] == 0:
                     pg.draw.rect(screen,
-                                 pg.Color('black'),
-                                 (x * self.cell_size + self.left,
-                                 y * self.cell_size + self.top,
-                                 self.cell_size, self.cell_size), 0)
+                                 pg.Color(0, 170, 114, 100),
+                                 (j * self.cell_size + self.left,
+                                 i * self.cell_size + self.top,
+                                 self.cell_size, self.cell_size), 1)
+                if self.board[i][j] == 1:
+                    pg.draw.rect(screen,
+                                 pg.Color(0, 170, 114, 100),
+                                 (j * self.cell_size + self.left,
+                                 i * self.cell_size + self.top,
+                                 self.cell_size, self.cell_size))
 
     def random_level(self, diff, maxi):
         pass
@@ -56,6 +68,10 @@ class Jumper(pg.sprite.Sprite):    # прыгун
         # столкновение
 
 
+def move_jumper(player, movement):
+    x, y = player.pos
+
+
 if __name__ == '__main__':
     pg.init()
     size = width, height = 1200, 800
@@ -63,6 +79,7 @@ if __name__ == '__main__':
     pg.draw.rect(screen, (255, 255, 255), [200, 0, width - 400, height])
     board = Space(800, 800)
     running = True
+    clock = time.Clock()
     while running:
         # внутри игрового цикла ещё один цикл
         # приема и обработки сообщений
@@ -76,4 +93,5 @@ if __name__ == '__main__':
         board.render()
         # обновление экрана
         pg.display.flip()
+        clock.tick(100)
     pg.quit()
