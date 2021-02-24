@@ -25,7 +25,7 @@ class Roota(pg.sprite.Sprite):
         self.G = 0.02
         self.rect = pg.Rect(x, y, 28, 50)
         self.image = Roota.image
-        print(x, y)
+        self.mask = pg.mask.from_surface(self.image)
         self.add(roota_sprites)
         self.dt = 0
 
@@ -77,6 +77,15 @@ class Border(pg.sprite.Sprite):
             self.rect = pg.Rect(x1, y1, x2 - x1, 1)
 
 
+class Background(pg.sprite.Sprite):
+    """фон"""
+    image = load_image("screen.jpg")
+
+    def __init__(self):
+        super().__init__(group_sprites)
+        self.rect = pg.Rect(0, 0, 350, 700)
+
+
 if __name__ == '__main__':
     pg.init()
     pg.display.set_caption('Dodle Jump')
@@ -87,9 +96,10 @@ if __name__ == '__main__':
     roota_sprites = pg.sprite.Group()
     sticks = pg.sprite.Group()
     horizontal_borders = pg.sprite.Group()
+    Background()
     hero = Roota(100, 600)
     Border(5, height - 5, width - 5, height - 5)
-    Stick(85, 300)
+    Stick(85, 100)
     running = True
     clock = time.Clock()
     while running:
