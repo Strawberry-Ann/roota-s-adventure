@@ -42,12 +42,20 @@ class Roota(pg.sprite.Sprite):
         self.speedy = self.speedy + self.G * dt
         if pg.sprite.spritecollideany(self, horizontal_borders):
             self.speed_up()
-        print(self.rect.x, self.rect.y)
+        if self.speedy > 0:
+            if pg.sprite.spritecollideany(self, sticks):
+                self.speed_up()
+
+    def speed_up_x(self, coord_x):
+        self.speedx = (coord_x - self.rect.x - (self.rect.width // 2)) // 100
 
 
 class Stick(pg.sprite.Sprite):
+    image = load_image("stick.jpg")
+
     def __init__(self, x, y):
         super().__init__(group_sprites)
+        self.add(sticks)
         self.speedy = 1
         self.G = 0.02
         self.rect = pg.Rect(x, y, 30, 5)
@@ -81,6 +89,7 @@ if __name__ == '__main__':
     horizontal_borders = pg.sprite.Group()
     hero = Roota(100, 600)
     Border(5, height - 5, width - 5, height - 5)
+    Stick(85, 300)
     running = True
     clock = time.Clock()
     while running:
@@ -92,6 +101,8 @@ if __name__ == '__main__':
                 running = False
             if event.type == pg.MOUSEMOTION:
                 x1, y1 = event.pos
+                if 0 < x1 < width and 0 < y1 < height:
+                    hero.speed_up_x(x1)
         pg.display.flip()
         clock.tick(100)
     pg.quit()
