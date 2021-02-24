@@ -120,7 +120,7 @@ if __name__ == '__main__':
     Background()
     roota_sprites = pg.sprite.Group()
     sticks = pg.sprite.Group()
-    level = Level(20, 50, 50, 100, 350, -5000)
+    level = Level(20, 150, 200, 350, 350, -5000)
     for x, y in level.level:
         Stick(x, y)
     horizontal_borders = pg.sprite.Group()
