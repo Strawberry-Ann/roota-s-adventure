@@ -99,7 +99,6 @@ if __name__ == '__main__':
     Background()
     hero = Roota(100, 600)
     Border(5, height - 5, width - 5, height - 5)
-    Stick(85, 100)
     running = True
     clock = time.Clock()
     while running:
