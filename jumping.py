@@ -99,7 +99,7 @@ class Level:
         for i in range(self.sizey, self.miny, (self.miny // 2)):
             if choice([0, 1]) == 1 or c == 1:
                 h = i - randrange(0, self.maxy - self.miny + 1)
-                m1 = randrange(1, self.sizex // self.minx)
+                m1 = randrange(1, self.sizex // self.minx - 1)
                 m2, m3 = randrange(m1, (self.sizex // self.minx)), randrange(0, m1)
                 t = choices([0, 1, 2], k=2)
                 for k in [(0, m1), (1, m2), (2, m3)]:
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     Background()
     roota_sprites = pg.sprite.Group()
     sticks = pg.sprite.Group()
-    level = Level(20, 50, 50, 50, 350, -5000)
+    level = Level(20, 50, 50, 100, 350, -5000)
     for x, y in level.level:
         Stick(x, y)
     horizontal_borders = pg.sprite.Group()
