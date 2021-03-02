@@ -16,7 +16,8 @@ def load_image(name, colorkey=None):
 
 
 class Roota(pg.sprite.Sprite):
-    image = load_image('hero.png')
+    image1 = load_image('hero.png')
+    image2 = load_image('hero2.png')
 
     def __init__(self, x, y):
         super().__init__(group_sprites)
@@ -24,7 +25,7 @@ class Roota(pg.sprite.Sprite):
         self.speedy = -2
         self.G = 0.02
         self.rect = pg.Rect(x, y, 28, 50)
-        self.image = Roota.image
+        self.image = Roota.image1
         self.mask = pg.mask.from_surface(self.image)
         self.add(roota_sprites)
         self.dt = 0
@@ -35,16 +36,21 @@ class Roota(pg.sprite.Sprite):
 
     def update(self):
         dt = time.get_ticks() // 1000 - self.dt
-        if self.rect.x < 0:
-            self.rect.x += size[0]
+        if self.rect.x < 200:
+            self.rect.x += 800
         self.rect.x = (self.rect.x + self.speedx) % size[0]
         self.rect.y += self.speedy
         self.speedy = self.speedy + self.G * dt
         if pg.sprite.spritecollideany(self, horizontal_borders):
             self.speed_up()
-        if self.speedy > 0:
+        if self.speedy >= 0:
+            self.image = Roota.image1
+            self.mask = pg.mask.from_surface(self.image1)
             if pg.sprite.spritecollideany(self, sticks):
                 self.speed_up()
+        else:
+            self.image = Roota.image2
+            self.mask = pg.mask.from_surface(self.image)
 
     def speed_up_x(self, coord_x):
         self.speedx = (coord_x - self.rect.x - (self.rect.width // 2)) // 100
@@ -56,7 +62,7 @@ class Stick(pg.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(group_sprites)
         self.add(sticks)
-        self.speedy = 1
+        self.speedy = 0
         self.G = 0.02
         self.rect = pg.Rect(x, y, 30, 5)
 
@@ -83,7 +89,7 @@ class Background(pg.sprite.Sprite):
 
     def __init__(self):
         super().__init__(group_sprites)
-        self.rect = pg.Rect(0, 0, 350, 700)
+        self.rect = pg.Rect(200, 0, 1000, 600)
 
 
 class Level:
@@ -104,7 +110,7 @@ class Level:
                 t = choices([0, 1, 2], k=2)
                 for k in [(0, m1), (1, m2), (2, m3)]:
                     if k[0] in t:
-                        self.level.append((k[1] * self.minx, h))
+                        self.level.append((k[1] * self.minx + 200, h + 550))
                 c = 0
             else:
                 c = 1
@@ -113,18 +119,18 @@ class Level:
 if __name__ == '__main__':
     pg.init()
     pg.display.set_caption('Dodle Jump')
-    size = width, height = 350, 700
+    size = width, height = 1200, 600
     screen = pg.display.set_mode(size)
     screen.fill((0, 0, 0))
     group_sprites = pg.sprite.Group()
     Background()
     roota_sprites = pg.sprite.Group()
     sticks = pg.sprite.Group()
-    level = Level(20, 150, 200, 350, 350, -5000)
+    level = Level(20, 150, 200, 350, 800, -5000)
     for x, y in level.level:
         Stick(x, y)
     horizontal_borders = pg.sprite.Group()
-    hero = Roota(100, 600)
+    hero = Roota(500, 550)
     Border(5, height - 5, width - 5, height - 5)
     running = True
     clock = time.Clock()
